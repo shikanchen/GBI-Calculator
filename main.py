@@ -1,6 +1,5 @@
 import urllib.request
 import json
-from datetime import datetime
 
 
 def get_data():
@@ -8,9 +7,6 @@ def get_data():
     data_ticker = json.loads(urllib.request.urlopen('https://api.coinmarketcap.com/v1/ticker/').read())
     data_available_ticker = [x for x in data_ticker if x['name'] in product]
     total_cap = sum([float(x['market_cap_usd']) for x in data_ticker if x['name'] in product])
-
-    print(datetime.fromtimestamp(int(data_ticker[0]['last_updated'])).strftime('%Y-%m-%d %H:%M:%S'))
-
     return total_cap, data_available_ticker
 
 
