@@ -15,11 +15,9 @@ def get_data():
 
 
 def get_weighted_base():
-    total = sum([float(x.strip().split(',')[1]) for x in open(fbase)])
     base = 0
-    for d in [float(x.strip().split(',')[1]) for x in open(fbase)]:
-        base += d*d/total
-
+    for d in [x.strip().split(',') for x in open(fbase)]:
+        base += float(d[2])*float(d[1])
     return base
 
 
@@ -27,8 +25,10 @@ def calculate_gbi():
     total_market_cap_usd, data = get_data()
     weighted_avg = 0
     for d in data:
-        cap_usd = float(d['available_supply']) * float(d['price_usd'])
-        ratio = cap_usd / total_market_cap_usd
+        cap_usd = float(d['market_cap_usd'])
+        for d2 in [x.strip().split(',') for x in open(fbase)]:
+            if d['name'] == d2[0]:
+                ratio = float(d2[1])
         weighted_avg += cap_usd * ratio
     return weighted_avg / get_weighted_base() * 1000
 
@@ -36,5 +36,5 @@ def calculate_gbi():
 if __name__ == "__main__":
     fbase = 'base'
     gbi = calculate_gbi()
-    # TODO the cause could be that weight is calculated as independent of its corresponding value
+    # error range 1.5%
     print('GBI:', gbi)
