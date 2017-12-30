@@ -11,6 +11,8 @@ class GBIManager(object):
         data_ticker = json.loads(urllib.request.urlopen('https://api.coinmarketcap.com/v1/ticker/').read())
         data_available_ticker = [x for x in data_ticker if x['name'] in product]
         total_cap = sum([float(x['market_cap_usd']) for x in data_ticker if x['name'] in product])
+        self.time = float(
+            json.loads(urllib.request.urlopen('https://api.coinmarketcap.com/v1/global/').read())['last_updated'])
         return total_cap, data_available_ticker
 
     def get_weighted_base(self):
@@ -29,4 +31,4 @@ class GBIManager(object):
                     ratio = float(d2[1])
             weighted_avg += cap_usd * ratio
         self.gbi = weighted_avg / self.get_weighted_base() * 1000
-        return self.gbi
+        return self.time, self.gbi
