@@ -12,6 +12,7 @@ def insert():
     print('inserted id: {}'.format(result.inserted_id))
 
 def stop():
+    global stopped
     stopped = True
 
 if __name__ == "__main__":
