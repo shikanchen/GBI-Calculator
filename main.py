@@ -11,17 +11,8 @@ def insert():
     result = client.gbi.data.insert_one(data)
     print('inserted id: {}'.format(result.inserted_id))
 
-def stop():
-    global stopped
-    stopped = True
-
 if __name__ == "__main__":
     fbase = 'base'
     gbiManager = GBIManager(fbase)
-    stopped = False
     client = MongoClient('localhost', 27017)
-
-    while not stopped:
-        insert()
-        # insert a new set of data every 10 mins
-        time.sleep(600)
+    insert()
