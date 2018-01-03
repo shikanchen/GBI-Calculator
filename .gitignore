@@ -103,6 +103,7 @@ ENV/
 #ide setting file
 .idea/
 
-#mongod
+#data cache
 data/mongo_server.log*
 data/db/
+tmp/*
