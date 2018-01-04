@@ -11,7 +11,7 @@ def insert():
 if __name__ == "__main__":
     fbase = 'base'
     gbiManager = GBIManager(fbase)
-    gbiManager.calculate_gbi()
+    gbiManager.calculate_gbi(['coinmarketcap','binance'])
     print(gbiManager.gbi)
     client = MongoClient('localhost', 27017)
     insert()
