@@ -2,7 +2,7 @@
 A python extension for calculating global blockchain index
 
 ## Usage
-### GBIManager
+### GBIManager.py
 Create an object of GBIManager using file named base as the base file
 ```Python
 gbiManager = GBIManager('base')
