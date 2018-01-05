@@ -1,4 +1,4 @@
-# GBI-Calculator
+# GBIManager
 A python extension for calculating global blockchain index
 
 ## Usage
