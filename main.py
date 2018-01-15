@@ -19,5 +19,5 @@ if __name__ == "__main__":
     #   `kraken`
     gbiManager.calculate_gbi(['coinmarketcap', 'binance', 'kraken'])
     print(gbiManager.gbi)
-    client = MongoClient('localhost', 27017)
+    client = MongoClient('mongodb://yuze:yuzeiscoming@localhost:27017/FinDB')
     insert()
