@@ -1,14 +1,13 @@
-import datetime
 import urllib.request
 import json
 from urllib.error import HTTPError
 
 
 class GBIManager(object):
-    def __init__(self, fname, tmp='tmp/' + str(datetime.date.today())):
+    def __init__(self, fname):
         self.base = fname
-        self.tmp = tmp
         self.gbi = {}
+        self.cache = {'latest_gbi':[]}
 
     def get_weighted_base(self):
         """
@@ -30,7 +29,6 @@ class GBIManager(object):
 
         :rtype: (int, float)
         """
-        ftmp = open(self.tmp, 'w')
         data_ticker = json.loads(urllib.request.urlopen('https://api.coinmarketcap.com/v1/ticker/').read())
         data = [x for x in data_ticker if x['symbol'] in product]
         time = int(
@@ -41,9 +39,8 @@ class GBIManager(object):
             for d2 in [x.strip().split(',') for x in open(self.base)]:
                 if d['symbol'] == d2[0]:
                     ratio = float(d2[1])
-            ftmp.write(','.join([d['symbol'], str(cap_usd), d['total_supply'], str(ratio)]) + '\n')
+            self.cache['latest_gbi'].append(','.join([d['symbol'], str(cap_usd), d['total_supply'], str(ratio)]))
             weighted_avg += cap_usd * ratio
-        ftmp.close()
         return time, weighted_avg / self.get_weighted_base() * 1000
 
     def source_binance(self, product):
@@ -54,7 +51,7 @@ class GBIManager(object):
         weighted_avg = 0
         for p in product:
             if p == 'BTC':
-                t = list(filter(lambda x: x[0] == p, [x.strip().split(',') for x in open(self.tmp)]))[0]
+                t = list(filter(lambda x: x[0] == p, [x.strip().split(',') for x in self.cache['latest_gbi']]))[0]
                 ratio = float(t[3])
                 BTC_price = \
                     json.loads(
@@ -72,7 +69,7 @@ class GBIManager(object):
             except HTTPError:
                 weighted_avg += self.dataMissingMakeup(p)
                 continue
-            for t in [x.strip().split(',') for x in open(self.tmp)]:
+            for t in [x.strip().split(',') for x in self.cache['latest_gbi']]:
                 if p == t[0]:
                     cap_usd = float(price) * BTC_price * float(t[2])
                     ratio = float(t[3])
@@ -104,7 +101,7 @@ class GBIManager(object):
                 weighted_avg += self.dataMissingMakeup(p)
                 continue
             price = list(ticker['result'].values())[0]['c'][0]
-            for t in [x.strip().split(',') for x in open(self.tmp)]:
+            for t in [x.strip().split(',') for x in self.cache['latest_gbi']]:
                 if p == t[0]:
                     cap_usd = float(price) * float(t[2])
                     ratio = float(t[3])
@@ -121,6 +118,6 @@ class GBIManager(object):
 
         :rtype: float
         """
-        for t in [x.strip().split(',') for x in open(self.tmp)]:
+        for t in [x.strip().split(',') for x in self.cache['latest_gbi']]:
             if t[0] == product:
                 return float(t[1]) * float(t[3])

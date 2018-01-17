@@ -4,9 +4,10 @@ from pymongo import MongoClient
 
 def insert():
     data = {
+        'cache': json.dumps(gbiManager.cache['latest_gbi']),
         'bgi': json.dumps(gbiManager.gbi)
     }
-    result = client.gbi.coinmarketcap.insert_one(data)
+    result = client.gbi.insert_one(data)
     print('inserted id: {}'.format(result.inserted_id))
 
 
